@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Cards } from '../components/Card/Cards';
 import { StyledDashboard } from './Dashboard.styled';
 import axios from 'axios';
@@ -22,7 +22,9 @@ const Dashboard = () => {
     if (isLoading) {
       (async () => {
         try {
-          const response = await axios.get('http://localhost:5000/teams');
+          const response = await axios.get(
+            'https://react-testcao.herokuapp.com/teams'
+          );
 
           setTeams(response.data);
           setIsLoading(false);
@@ -31,28 +33,33 @@ const Dashboard = () => {
         }
       })();
     }
-  }, [isLoading]);
+  }, [user]);
+
+  console.log(teams);
 
   const updateScore = async (id, score, action) => {
-    await axios.put(
-      `http://localhost:5000/team/score/${id}/${user}/${action}`,
+    const response = await axios.put(
+      `https://react-testcao.herokuapp.com/team/score/${id}/${user}/${action}`,
       {
         score,
       }
     );
+
+    setTeams(response.data.teams);
   };
 
   const incrementClick = async (e, id) => {
     const teamScore = teams.filter((team) => team.scores._id === id);
     let score = teamScore[0].scores.score + 1;
+    let clicked = false;
 
-    try {
-      updateScore(id, score, 'increment');
-
-      setIsLoading(true);
-      console.log(isLoading);
-    } catch (error) {
-      console.log(error);
+    if (!clicked) {
+      try {
+        updateScore(id, score, 'increment');
+        clicked = true;
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -64,12 +71,15 @@ const Dashboard = () => {
 
     if (score < 0) return;
 
-    try {
-      updateScore(id, score, 'decrement');
+    let clicked = false;
 
-      setIsLoading(true);
-    } catch (error) {
-      console.log(error);
+    if (!clicked) {
+      try {
+        clicked = true;
+        updateScore(id, score, 'decrement');
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

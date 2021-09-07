@@ -26,9 +26,12 @@ const Login = () => {
           password: password,
         };
 
-        const response = await axios.post('http://localhost:5000/register', {
-          ...user,
-        });
+        const response = await axios.post(
+          'https://react-testcao.herokuapp.com/register',
+          {
+            ...user,
+          }
+        );
 
         localStorage.setItem('user', JSON.stringify(response.data.user));
 
@@ -49,9 +52,12 @@ const Login = () => {
       password: loginPassword,
     };
 
-    const response = await axios.post('http://localhost:5000/login', {
-      ...user,
-    });
+    const response = await axios.post(
+      'https://react-testcao.herokuapp.com/login',
+      {
+        ...user,
+      }
+    );
 
     localStorage.setItem('user', JSON.stringify(response.data.user));
     setUser(response.data.user);

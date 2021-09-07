@@ -69,7 +69,12 @@ app.put('/team/score/:scoreId/:userId/:action', async (req, res) => {
       newScore.user.push({ ...newScore.user, _id: userId });
 
       newScore.save();
-      res.send({ message: 'Score added', newScore });
+
+      const teams = await Team.find()
+        .select('img score')
+        .populate('scores', 'score')
+        .exec();
+      res.send({ message: 'Score added', teams });
     }
   } else {
     if ('' + score._id === scoreId) {
@@ -83,7 +88,12 @@ app.put('/team/score/:scoreId/:userId/:action', async (req, res) => {
         decrementScore.user = filteredUser;
 
         decrementScore.save();
-        res.send({ message: 'Minus score', decrementScore });
+
+        const teams = await Team.find()
+          .select('img score')
+          .populate('scores', 'score')
+          .exec();
+        res.send({ message: 'Minus score', teams });
       }
     } else {
       res.send({ message: 'oops' });
