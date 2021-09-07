@@ -35,8 +35,6 @@ const Dashboard = () => {
     }
   }, [user]);
 
-  console.log(teams);
-
   const updateScore = async (id, score, action) => {
     const response = await axios.put(
       `https://react-testcao.herokuapp.com/team/score/${id}/${user}/${action}`,
