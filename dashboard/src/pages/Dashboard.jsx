@@ -8,6 +8,8 @@ import Login from './Login';
 
 export const UserContext = React.createContext();
 
+const endpoint = 'https://react-testcao.herokuapp.com';
+
 const Dashboard = () => {
   const [teams, setTeams] = useState([]);
   const [user, setUser] = useState('');
@@ -22,9 +24,7 @@ const Dashboard = () => {
     if (isLoading) {
       (async () => {
         try {
-          const response = await axios.get(
-            'https://react-testcao.herokuapp.com/teams'
-          );
+          const response = await axios.get(`${endpoint}/teams`);
 
           setTeams(response.data);
           setIsLoading(false);
@@ -36,50 +36,60 @@ const Dashboard = () => {
   }, [user]);
 
   const updateScore = async (id, score, action) => {
-    const response = await axios.put(
-      `https://react-testcao.herokuapp.com/team/score/${id}/${user}/${action}`,
-      {
-        score,
-      }
-    );
-
-    setTeams(response.data.teams);
-  };
-
-  const incrementClick = async (e, id) => {
-    const teamScore = teams.filter((team) => team.scores._id === id);
-    let score = teamScore[0].scores.score + 1;
-    let clicked = false;
-
-    if (!clicked) {
-      try {
-        updateScore(id, score, 'increment');
-        clicked = true;
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.put(
+        `${endpoint}/team/score/${id}/${user}/${action}`,
+        {
+          ...score,
+        }
+      );
+      setTeams(response.data.teams);
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const decrementClick = async (e, id) => {
-    if (isLoading) return;
-
+  const clickHandler = (e, id) => {
     const teamScore = teams.filter((team) => team.scores._id === id);
-    let score = teamScore[0].scores.score - 1;
+    const clicked = teamScore[0].scores.clicked;
 
-    if (score < 0) return;
+    if (!clicked && e.target.dataset.action === 'increment') {
+      console.log(teamScore);
 
-    let clicked = false;
+      let score = { score: teamScore[0].scores.score + 1, clicked: true };
 
-    if (!clicked) {
-      try {
-        clicked = true;
-        updateScore(id, score, 'decrement');
-      } catch (error) {
-        console.log(error);
-      }
+      updateScore(id, score, 'increment');
+    } else if (clicked && e.target.dataset.action === 'decrement') {
+      let score = { score: teamScore[0].scores.score - 1, clicked: false };
+
+      if (score < 0) return;
+      updateScore(id, score, 'decrement');
     }
   };
+
+  // const incrementClick = async (e, id) => {
+  //   const teamScore = teams.filter((team) => team.scores._id === id);
+  //   let score = teamScore[0].scores.score + 1;
+
+  //   try {
+  //     updateScore(id, score, 'increment');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const decrementClick = async (e, id) => {
+  //   const teamScore = teams.filter((team) => team.scores._id === id);
+  //   let score = teamScore[0].scores.score - 1;
+
+  //   if (score < 0) return;
+
+  //   try {
+  //     updateScore(id, score, 'decrement');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const logoutHandler = () => {
     localStorage.removeItem('user');
@@ -100,8 +110,8 @@ const Dashboard = () => {
         </div>
         <Cards
           teams={teams}
-          increment={incrementClick}
-          decrement={decrementClick}
+          increment={clickHandler}
+          decrement={clickHandler}
         />
       </StyledDashboard>
     </Account>

@@ -29,7 +29,7 @@ mongoose
 app.get('/teams', async (req, res) => {
   const data = await Team.find()
     .select('img score')
-    .populate('scores', 'score')
+    .populate('scores', 'score clicked')
     .exec();
 
   res.send(data);
@@ -72,8 +72,9 @@ app.put('/team/score/:scoreId/:userId/:action', async (req, res) => {
 
       const teams = await Team.find()
         .select('img score')
-        .populate('scores', 'score')
+        .populate('scores', 'score clicked')
         .exec();
+
       res.send({ message: 'Score added', teams });
     }
   } else {
@@ -91,8 +92,9 @@ app.put('/team/score/:scoreId/:userId/:action', async (req, res) => {
 
         const teams = await Team.find()
           .select('img score')
-          .populate('scores', 'score')
+          .populate('scores', 'score clicked')
           .exec();
+
         res.send({ message: 'Minus score', teams });
       }
     } else {
