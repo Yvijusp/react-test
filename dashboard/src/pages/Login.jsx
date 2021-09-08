@@ -1,10 +1,6 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import { UserContext } from './Dashboard';
 import { Form } from '../components/Form/Form';
-
-const endpoint =
-  'http://localhost:5000' || 'https://react-testcao.herokuapp.com';
 
 const Login = () => {
   // REgister form

@@ -8,8 +8,7 @@ import Login from './Login';
 
 export const UserContext = React.createContext();
 
-const endpoint =
-  'http://localhost:5000' || 'https://react-testcao.herokuapp.com';
+const endpoint = 'https://react-testcao.herokuapp.com';
 
 const Dashboard = () => {
   const [teams, setTeams] = useState([]);
