@@ -3,6 +3,9 @@ import axios from 'axios';
 import { UserContext } from './Dashboard';
 import { Form } from '../components/Form/Form';
 
+const endpoint =
+  'http://localhost:5000' || 'https://react-testcao.herokuapp.com';
+
 const Login = () => {
   // REgister form
   const [username, setUsername] = useState('');
@@ -13,32 +16,19 @@ const Login = () => {
   const [loginUsername, setLoginUsername] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
-  const { setUser } = useContext(UserContext);
+  const { loginUser, registerUser } = useContext(UserContext);
 
   const registerFormHandler = async (e) => {
     e.preventDefault();
     if (!username || !password || !passwordConfirm) return;
 
     if (password === passwordConfirm) {
-      try {
-        const user = {
-          username: username,
-          password: password,
-        };
+      const user = {
+        username: username,
+        password: password,
+      };
 
-        const response = await axios.post(
-          'https://react-testcao.herokuapp.com/register',
-          {
-            ...user,
-          }
-        );
-
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-
-        setUser(response.data.user);
-      } catch (error) {
-        console.log(error);
-      }
+      registerUser(user);
     }
   };
 
@@ -52,15 +42,7 @@ const Login = () => {
       password: loginPassword,
     };
 
-    const response = await axios.post(
-      'https://react-testcao.herokuapp.com/login',
-      {
-        ...user,
-      }
-    );
-
-    localStorage.setItem('user', JSON.stringify(response.data.user));
-    setUser(response.data.user);
+    loginUser(user);
   };
 
   return (

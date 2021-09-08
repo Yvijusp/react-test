@@ -6,6 +6,7 @@ const TeamSchema = Schema({
     type: String,
     required: true,
   },
+  clicked: false,
   scores: {
     type: Schema.Types.ObjectId,
     ref: 'Score',

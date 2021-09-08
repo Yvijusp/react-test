@@ -6,7 +6,6 @@ const ScoreSchema = Schema({
     type: Number,
     required: true,
   },
-  clicked: false,
   user: [
     {
       type: Schema.Types.ObjectId,

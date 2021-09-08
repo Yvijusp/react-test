@@ -121,15 +121,30 @@ app.post('/register', async (req, res) => {
 
   const response = await newUser.save();
 
-  res.send({ message: 'Registered successfully', user: response._id });
+  const userData = await User.find()
+    .select('teams _id ')
+    .populate('teams', 'scores clicked')
+    .exec();
+
+  res.send({
+    message: 'Registered successfully',
+    user: response._id,
+    userData: userData,
+  });
 });
+
+// Login user
 
 app.post('/login', async (req, res) => {
   if (!req.body) return res.status(404).send({ message: "User doesn't exist" });
 
-  const userId = await User.find();
+  const userData = await User.find()
+    .select('teams _id username ')
+    .populate('teams', 'scores clicked')
+    .exec();
+  // const score = await Score.find();
 
-  const filteredUser = userId.filter(
+  const filteredUser = userData.filter(
     (user) => user.username === req.body.username
   );
 
@@ -137,5 +152,15 @@ app.post('/login', async (req, res) => {
 
   const response = await User.findById('' + _id);
 
-  res.send({ user: response._id });
+  res.send({ user: response._id, userData: userData });
+});
+
+// send user data
+app.get('/userdata', async (req, res) => {
+  const userData = await User.find()
+    .select('teams _id username')
+    .populate('teams', 'scores clicked')
+    .exec();
+
+  res.send({ userData: userData });
 });
