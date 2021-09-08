@@ -54,8 +54,6 @@ const Dashboard = () => {
     const clicked = teamScore[0].scores.clicked;
 
     if (!clicked && e.target.dataset.action === 'increment') {
-      console.log(teamScore);
-
       let score = { score: teamScore[0].scores.score + 1, clicked: true };
 
       updateScore(id, score, 'increment');
